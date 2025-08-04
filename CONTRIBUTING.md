@@ -28,12 +28,12 @@ If you're not sure where to begin, consider:
     ```
 
 3. Build the project:
-    ```bash
-    mkdir build && cd build
-    cmake ..
-    make
-    ./ZoulTerm
-    ```
+```bash
+git clone https://github.com/FathiMahdi/ZoulTerm.git
+cd ZoulTerm
+chmod +x setup.sh
+./setup.sh
+```
 
 ---
 
