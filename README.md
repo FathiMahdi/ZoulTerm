@@ -23,7 +23,9 @@ Serial terminals are essential for firmware debugging and device communication. 
 
 ## 🛠 Installation
 
-### Linux
+### 🐧Linux
+
+#### 🧱 Build
 
 ```bash
 git clone https://github.com/FathiMahdi/ZoulTerm.git
@@ -31,6 +33,20 @@ cd ZoulTerm
 chmod +x setup.sh
 ./setup.sh
 ```
+#### 📦 Package
+
+go to release page and download the latest .deb version
+
+```bash
+dbkg -i zoulterm_[version]
+```
+
+for example for beta version
+```bash
+
+dbkg -i zoulterm_0.0.1
+```
+
 > 📋 Note: This will automatically create a python virtual environment folder
 
 > 📦 Dependencies: Ensure you have `qtbase5-dev`, `qtserialport5-dev`, and `pyserial` are installed.
