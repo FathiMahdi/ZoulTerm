@@ -7,7 +7,7 @@ First off, thanks for taking the time to contribute! Your help is greatly apprec
 ## 🧭 Where to Start
 
 If you're not sure where to begin, consider:
-- Looking at [Issues](https://github.com/yourusername/ZoulTerm/issues)
+- Looking at [Issues](https://github.com/FathiMahdi/ZoulTerm/issues)
 - Improving the documentation or translations
 - Adding new features or fixing bugs
 - Reviewing and testing existing pull requests
