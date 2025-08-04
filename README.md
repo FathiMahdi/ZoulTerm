@@ -36,7 +36,7 @@ chmod +x setup.sh
 ```
 > 📋 Note: This will automatically create a python virtual environment folder
 
-> 📦 Dependencies: Ensure you have `qtbase5-dev`, `qtserialport5-dev`, `cmake`, and `make` installed.
+> 📦 Dependencies: Ensure you have `qtbase5-dev`, `qtserialport5-dev`, and `pyserial` are installed.
 
 ### Windows / macOS
 
