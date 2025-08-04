@@ -15,12 +15,9 @@ Serial terminals are essential for firmware debugging and device communication. 
 
 - Real-time serial data monitoring
 - Auto-detection of available serial ports
-- Configurable baud rate, data bits, stop bits, and parity
 - Hex / ASCII / raw display modes
-- Line ending options: CR, LF, CRLF
 - Logging to text files
 - Send custom commands or text files (e.g., AT commands)
-- Dark/light theme support *(planned)*
 
 ---
 
