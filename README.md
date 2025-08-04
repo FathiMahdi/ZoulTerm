@@ -34,6 +34,7 @@ cd ZoulTerm
 chmod +x setup.sh
 ./setup.sh
 ```
+> 📋 Note: This will automatically create a python virtual environment folder
 
 > 📦 Dependencies: Ensure you have `qtbase5-dev`, `qtserialport5-dev`, `cmake`, and `make` installed.
 
@@ -48,7 +49,7 @@ chmod +x setup.sh
 After building, launch ZoulTerm with:
 
 ```bash
-./build/ZoulTerm
+./dist/ZoulTerm
 ```
 
 ### ⚙️ Basic Operations

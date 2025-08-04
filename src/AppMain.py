@@ -9,12 +9,7 @@ from PyQt5 import uic
 import json
 from PyQt5 import QtCore, QtGui, QtWidgets
 import os
-from reportlab.lib.pagesizes import letter
-from reportlab.pdfgen import canvas   
-import random
-from datetime import datetime
 from ZoulTerm_ui import Ui_MainWindow
-import tempfile
 from evaq_config_main_rc import *
 
 from AppAbout      import *
@@ -36,29 +31,11 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         # Create a custom label for the connection status
         self.connection_status_label = QLabel("  Disconnected  ❌")
 
-        #Create current action
-        self.current_action_status_label = QLabel(" No status")
-
-
-        # Create a progress bar for the process status (next to connection status)
-        self.progress_bar = QProgressBar(self)
-        self.progress_bar.setRange(0, 100)  # Range from 0 to 100
-        self.progress_bar.setTextVisible(True)  # Hide the text inside the progress bar
-        self.progress_bar.setFixedWidth(100)  # Set a fixed width for the progress bar
-
         # Create a status bar
         status_bar = QStatusBar(self)
 
         # Add connection status label to the left side of the status bar
         status_bar.addWidget(self.connection_status_label)
-
-        #Add status action 
-        status_bar.addWidget(self.current_action_status_label)
-
-        status_bar.addPermanentWidget(self.current_action_status_label)
-
-        # Add progress bar to the right side of the status bar
-        status_bar.addPermanentWidget(self.progress_bar)
 
         # Set the status bar for the window
         self.setStatusBar(status_bar)
@@ -74,6 +51,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.MSGFormat           = 'Text'
         self.MonitorFormat       = 'Text'
         self.LogFileName         = ''
+        self.TerminalSearchTriggered = False
         self.actionAbout.triggered.connect(About_clicked)
         self.actionConnect.triggered.connect(self.Connect_clicked)
         self.actionClear_terminal.triggered.connect(self.clear_terminal)
@@ -85,6 +63,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_connect.clicked.connect(self.Connect_clicked)
         self.actionSetupConnection.triggered.connect(self.SetupConnection_clicked)
         self.actionDisconnect.triggered.connect(self.disconnect_serial)
+        self.pushButton_search.clicked.connect(self.TriggerTerminalSearch)
         self.pushButton_timestamp.clicked.connect(self.TriggerTimeStamp)
         self.pushButton_SendMSG.clicked.connect(self.send_msg)
         self.pushButton_scroll.clicked.connect(self.ScrollHandler)
@@ -101,6 +80,12 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.reconnect_timer.timeout.connect(self.check_serial_connection)
         self.reconnect_timer.timeout.connect(self.search_terminal)
         self.reconnect_timer.start(500) 
+
+
+    def TriggerTerminalSearch(self):
+
+        if not self.TerminalSearchTriggered:
+            self.TerminalSearchTriggered = True
 
     def PauseSerial(self):
 
@@ -132,29 +117,36 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         if os.path.exists(self.temp_filename):
             self.delete_temp_json(self.temp_filename)
      
-       
         event.accept()
-
-        
 
 
     def navigate_down(self):
+
         if self.current_index < len(self.keyword_positions) - 1:
             self.current_index += 1
+            self.highlight_current_occurrence()
+        else:
+            self.current_index = 0
             self.highlight_current_occurrence()
 
     ##############################################################################################
 
     def navigate_up(self):
+
         if self.current_index > 0 :
             self.current_index -= 1
             self.highlight_current_occurrence()
+        else:
+            self.current_index = len(self.keyword_positions) - 1
+            self.highlight_current_occurrence()
+
 
     ##############################################################################################
 
     def highlight_current_occurrence(self):
 
         if self.current_index != -1:
+
             # Get the current occurrence's position
             keyword_position = self.keyword_positions[self.current_index]
 
@@ -169,6 +161,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             # Set the cursor in the QPlainTextEdit to highlight the current occurrence
             self.plainTextEdit_terminal.setTextCursor(cursor)
 
+        self.label_find_number.setText(f"{self.current_index+1} of {len(self.keyword_positions)}")
+
 
     ##############################################################################################
 
@@ -176,49 +170,43 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
         keyword = self.lineEdit_search.text()
 
-        if keyword:
+        if not keyword:
+            self.label_find_number.setText("")
+            return
 
-            # Clear any existing selection
-            cursor = self.plainTextEdit_terminal.textCursor()
-            cursor.clearSelection()
-            self.plainTextEdit_terminal.setTextCursor(cursor)
 
-            # Reset the positions list and current index
-            self.keyword_positions = []
-            self.current_index = -1
+        if keyword == getattr(self, "last_search_keyword", "") and not self.TerminalSearchTriggered:
+            return 
 
-            # Get the plain text from the QPlainTextEdit widget
-            plain_text = self.plainTextEdit_terminal.toPlainText()
+        # Update the last searched keyword
+        self.last_search_keyword = keyword
 
-            # Start searching for the keyword
-            cursor = self.plainTextEdit_terminal.textCursor()
-            cursor.beginEditBlock()  # Begin editing block (so the highlighting is atomic)
+        # Reset the positions list and current index
+        self.keyword_positions = []
+        self.current_index = -1
 
-            # Find and select all occurrences of the keyword
-            index = plain_text.find(keyword)
-            while index != -1:
-                # Store the position of the keyword occurrence
-                self.keyword_positions.append(index)
+        # Clear any existing selection
+        cursor = self.plainTextEdit_terminal.textCursor()
+        cursor.clearSelection()
+        self.plainTextEdit_terminal.setTextCursor(cursor)
 
-                # Move the cursor to the keyword and select it
-                cursor.setPosition(index, QTextCursor.MoveAnchor)
-                cursor.setPosition(index + len(keyword), QTextCursor.KeepAnchor)
+        # Get the plain text
+        plain_text = self.plainTextEdit_terminal.toPlainText()
 
-                # Find next occurrence
-                index = plain_text.find(keyword, index + 1)
+        # Find all keyword occurrences
+        index = plain_text.find(keyword)
+        while index != -1:
+            self.keyword_positions.append(index)
+            index = plain_text.find(keyword, index + 1)
 
-            cursor.endEditBlock()  # End editing block
+        # Select the first occurrence if found
+        if self.keyword_positions:
+            self.current_index = 0
+            self.highlight_current_occurrence()
 
-            # Update the label with the number of occurrences
-            self.label_find_number.setText(f"Matched: {len(self.keyword_positions)}")
-
-            # Select the first occurrence (if any)
-            if self.keyword_positions:
-                self.current_index = 0
-                self.highlight_current_occurrence()
+        if self.TerminalSearchTriggered:
+            self.TerminalSearchTriggered = False
         
-        else : 
-            self.label_find_number.setText(f"")
 
 
     ##############################################################################################
@@ -366,12 +354,11 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
 
     def disconnect_serial(self):
-        """Disconnect the serial connection when the button is pressed"""
+    
         if self.serial_connection and self.serial_connection.is_open:
             self.serial_connection.close()
             self.serial_connection = None
             self.update_connection_status(False)  
-            self.current_action_status_label.setText("Device disconnected")
             QMessageBox.information(self, "Disconnected", "Disconnected from the serial port.")
         else:
             QMessageBox.warning(self, "Disconnected", "No device connected")
@@ -416,6 +403,13 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             
         try:
             self.decoded_serial_data = data
+
+            if self.comboBox_TerminalViewMode.currentText() == 'Hex':
+                
+                if isinstance(data, bytes):
+                    data = ' '.join(f'{b:02X}' for b in data)
+                else:
+                    data = ' '.join(f'{ord(c):02X}' for c in data)
 
             if self.pause_serial==False:
 
