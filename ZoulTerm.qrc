@@ -1,0 +1,48 @@
+<RCC>
+  <qresource prefix="resources">
+    <file>assets/icons/scroll.png</file>
+    <file>assets/icons/timestamp.png</file>
+    <file>assets/icons/app_icon_on.svg</file>
+    <file>assets/icons/window.png</file>
+    <file>assets/icons/usb_on.png</file>
+    <file>assets/icons/up_alt.png</file>
+    <file>assets/icons/up.png</file>
+    <file>assets/icons/unarchive.png</file>
+    <file>assets/icons/terminal_mode.png</file>
+    <file>assets/icons/terminal.png</file>
+    <file>assets/icons/stop.png</file>
+    <file>assets/icons/settings.png</file>
+    <file>assets/icons/send.png</file>
+    <file>assets/icons/search.png</file>
+    <file>assets/icons/save.png</file>
+    <file>assets/icons/right.png</file>
+    <file>assets/icons/refresh.png</file>
+    <file>assets/icons/plus.png</file>
+    <file>assets/icons/play.png</file>
+    <file>assets/icons/pen.png</file>
+    <file>assets/icons/pause.png</file>
+    <file>assets/icons/open alt.png</file>
+    <file>assets/icons/notebook.png</file>
+    <file>assets/icons/no-connection.png</file>
+    <file>assets/icons/new doc.png</file>
+    <file>assets/icons/mouse.png</file>
+    <file>assets/icons/minus white.png</file>
+    <file>assets/icons/left.png</file>
+    <file>assets/icons/info.png</file>
+    <file>assets/icons/forward_alt.png</file>
+    <file>assets/icons/forward.png</file>
+    <file>assets/icons/execute.png</file>
+    <file>assets/icons/exclamation.png</file>
+    <file>assets/icons/edit_menu.png</file>
+    <file>assets/icons/edit.png</file>
+    <file>assets/icons/down_alt.png</file>
+    <file>assets/icons/diconnected.png</file>
+    <file>assets/icons/copy doc.png</file>
+    <file>assets/icons/connected.png</file>
+    <file>assets/icons/command.png</file>
+    <file>assets/icons/clear.png</file>
+    <file>assets/icons/back_alt.png</file>
+    <file>assets/icons/advanced.png</file>
+    <file>assets/icons/action.png</file>
+  </qresource>
+</RCC>
