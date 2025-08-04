@@ -29,7 +29,7 @@ Serial terminals are essential for firmware debugging and device communication. 
 ### Linux
 
 ```bash
-git clone https://github.com/yourusername/ZoulTerm.git
+git clone https://github.com/FathiMahdi/ZoulTerm.git
 cd ZoulTerm
 chmod +x setup.sh
 ./setup.sh
