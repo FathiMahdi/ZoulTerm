@@ -9,6 +9,7 @@ from PyQt5 import uic
 import json
 from PyQt5 import QtCore, QtGui, QtWidgets
 import os
+import re
 from ZoulTerm_ui import Ui_MainWindow
 from evaq_config_main_rc import *
 
@@ -27,6 +28,11 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         super().__init__()
 
         self.setupUi(self)
+
+        # === ANSI formatting defaults ===
+        self.current_format = QTextCharFormat()
+        self.current_format.setForeground(QBrush(Qt.green))  # Default text color
+        self.current_format.setBackground(QBrush(Qt.black))  # Default background
 
         # Create a custom label for the connection status
         self.connection_status_label = QLabel("  Disconnected  ❌")
@@ -73,6 +79,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.actionTerminal_settings.triggered.connect(self.open_terminal_settings)
         self.toolButton_search_up.clicked.connect(self.navigate_up)
         self.toolButton_search_down.clicked.connect(self.navigate_down)
+        
 
 
         self.reconnect_timer = QTimer(self)
@@ -80,7 +87,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.reconnect_timer.timeout.connect(self.check_serial_connection)
         self.reconnect_timer.timeout.connect(self.search_terminal)
         self.reconnect_timer.start(500) 
-
+    
 
     def TriggerTerminalSearch(self):
 
@@ -262,6 +269,49 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             print(f"Temporary JSON file {temp_filename} does not exist, cannot delete.")
          
 
+    def ansi_apply_format(self, cursor, codes):
+   
+        for code in codes:
+            if code == 0:  # reset
+                self.current_format = QTextCharFormat()
+                self.current_format.setForeground(QBrush(Qt.green))
+                self.current_format.setBackground(QBrush(Qt.black))
+            elif 30 <= code <= 37:  # foreground
+                colors = [Qt.black, Qt.red, Qt.green, Qt.yellow, Qt.blue, Qt.magenta, Qt.cyan, Qt.white]
+                self.current_format.setForeground(QBrush(colors[code - 30]))
+            elif 40 <= code <= 47:  # background
+                colors = [Qt.black, Qt.red, Qt.green, Qt.yellow, Qt.blue, Qt.magenta, Qt.cyan, Qt.white]
+                self.current_format.setBackground(QBrush(colors[code - 40]))
+            elif code == 1:  # bold
+                self.current_format.setFontWeight(QFont.Bold)
+            elif code == 22:  # normal weight
+                self.current_format.setFontWeight(QFont.Normal)
+
+        cursor.setCharFormat(self.current_format)
+
+    def ansi_insert_text(self, text):
+
+      
+        cursor = self.plainTextEdit_terminal.textCursor()
+        pattern = re.compile(r'\x1b\[([0-9;]*)m')
+        pos = 0
+
+        for match in pattern.finditer(text):
+
+            # insert text before code
+            before = text[pos:match.start()]
+            if before:
+                cursor.insertText(before, self.current_format)
+
+            # parse ANSI codes
+            codes = [int(c) if c else 0 for c in match.group(1).split(';')]
+            self.ansi_apply_format(cursor, codes)
+            pos = match.end()
+
+        # insert remainder
+        if pos < len(text):
+            cursor.insertText(text[pos:], self.current_format)
+
     ##############################################################################################
 
     def clear_terminal(self):
@@ -417,10 +467,12 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
                     timestamp = self.get_timestamp()
                     data_with_timestamp = f"-> {timestamp} : {data}"
-                    self.plainTextEdit_terminal.appendPlainText(data_with_timestamp)
+                    #self.plainTextEdit_terminal.appendPlainText(data_with_timestamp)
+                    self.ansi_insert_text(data_with_timestamp)
 
                 else:
-                    self.plainTextEdit_terminal.appendPlainText(data)
+                    # self.plainTextEdit_terminal.appendPlainText(data)
+                    self.ansi_insert_text(data)
 
                 if self.isLogTriggered and self.LogFileName:
 
@@ -429,6 +481,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
                                     file.write(data_with_timestamp)
                                 else:
                                     file.write(data)
+                
+                
 
                 
         except Exception as e:

@@ -79,7 +79,7 @@
             <x>0</x>
             <y>0</y>
             <width>484</width>
-            <height>331</height>
+            <height>293</height>
            </rect>
           </property>
           <layout class="QGridLayout" name="gridLayout">
@@ -95,23 +95,6 @@
            </item>
           </layout>
          </widget>
-        </widget>
-       </item>
-       <item row="4" column="0">
-        <widget class="QPushButton" name="pushButton_send_at_command">
-         <property name="cursor">
-          <cursorShape>PointingHandCursor</cursorShape>
-         </property>
-         <property name="autoFillBackground">
-          <bool>true</bool>
-         </property>
-         <property name="text">
-          <string>Send</string>
-         </property>
-         <property name="icon">
-          <iconset resource="../../ZoulTerm.qrc">
-           <normaloff>:/resources/assets/icons/forward_alt.png</normaloff>:/resources/assets/icons/forward_alt.png</iconset>
-         </property>
         </widget>
        </item>
        <item row="2" column="0">
@@ -147,6 +130,12 @@
              <property name="icon">
               <iconset resource="../../ZoulTerm.qrc">
                <normaloff>:/resources/assets/icons/new doc.png</normaloff>:/resources/assets/icons/new doc.png</iconset>
+             </property>
+             <property name="iconSize">
+              <size>
+               <width>24</width>
+               <height>24</height>
+              </size>
              </property>
             </widget>
            </item>
@@ -184,14 +173,66 @@
          </item>
         </layout>
        </item>
-       <item row="3" column="0">
-        <widget class="QPushButton" name="pushButton_save_command_list">
+       <item row="5" column="0">
+        <widget class="QPushButton" name="pushButton_send_at_command">
+         <property name="cursor">
+          <cursorShape>PointingHandCursor</cursorShape>
+         </property>
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
          <property name="text">
-          <string>Save Commands List</string>
+          <string>Send Command</string>
          </property>
          <property name="icon">
           <iconset resource="../../ZoulTerm.qrc">
-           <normaloff>:/resources/assets/icons/open alt.png</normaloff>:/resources/assets/icons/open alt.png</iconset>
+           <normaloff>:/resources/assets/icons/copy doc.png</normaloff>:/resources/assets/icons/copy doc.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="4" column="0">
+        <widget class="QPushButton" name="pushButton_save_command_list">
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Save Commands</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../ZoulTerm.qrc">
+           <normaloff>:/resources/assets/icons/save.png</normaloff>:/resources/assets/icons/save.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
+         </property>
+        </widget>
+       </item>
+       <item row="3" column="0">
+        <widget class="QPushButton" name="pushButton_load_command_list">
+         <property name="autoFillBackground">
+          <bool>true</bool>
+         </property>
+         <property name="text">
+          <string>Load Commands</string>
+         </property>
+         <property name="icon">
+          <iconset resource="../../ZoulTerm.qrc">
+           <normaloff>:/resources/assets/icons/forward.png</normaloff>:/resources/assets/icons/forward.png</iconset>
+         </property>
+         <property name="iconSize">
+          <size>
+           <width>24</width>
+           <height>24</height>
+          </size>
          </property>
         </widget>
        </item>
