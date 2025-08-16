@@ -31,7 +31,7 @@ Serial terminals are essential for firmware debugging and device communication. 
 git clone https://github.com/FathiMahdi/ZoulTerm.git
 cd ZoulTerm
 chmod +x setup.sh
-bash setup.sh
+./setup.sh
 ```
 #### 📦 Package
 
