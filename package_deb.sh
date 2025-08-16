@@ -5,7 +5,7 @@ set -u  # Treat unset variables as error
 set -o pipefail
 
 PACKAGE_NAME="zoulterm"
-VERSION="0.0.1"
+VERSION="0.0.2"
 ARCHIVE_NAME="${PACKAGE_NAME}_${VERSION}.deb"
 BUILD_DIR="app/${PACKAGE_NAME}_${VERSION}"
 OUTPUT_DEB="app/${ARCHIVE_NAME}"

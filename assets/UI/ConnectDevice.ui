@@ -97,6 +97,9 @@
                 <verstretch>0</verstretch>
                </sizepolicy>
               </property>
+              <property name="editable">
+               <bool>true</bool>
+              </property>
               <property name="currentText">
                <string/>
               </property>
@@ -120,6 +123,9 @@
                 <horstretch>0</horstretch>
                 <verstretch>0</verstretch>
                </sizepolicy>
+              </property>
+              <property name="editable">
+               <bool>true</bool>
               </property>
               <item>
                <property name="text">

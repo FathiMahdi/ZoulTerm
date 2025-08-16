@@ -116,7 +116,7 @@
              <item row="0" column="1">
               <widget class="QLineEdit" name="lineEdit_new_command">
                <property name="placeholderText">
-                <string/>
+                <string>Add command to command list</string>
                </property>
               </widget>
              </item>
@@ -166,6 +166,9 @@
              </property>
              <property name="dragEnabled">
               <bool>true</bool>
+             </property>
+             <property name="placeholderText">
+              <string>&gt; Enter Send Command to execute</string>
              </property>
             </widget>
            </item>

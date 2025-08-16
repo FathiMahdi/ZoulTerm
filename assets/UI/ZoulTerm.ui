@@ -34,7 +34,7 @@
    <bool>true</bool>
   </property>
   <property name="windowTitle">
-   <string>ZoulTerm V0.0.1</string>
+   <string>ZoulTerm V0.0.2</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../ZoulTerm.qrc">

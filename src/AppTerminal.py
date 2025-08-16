@@ -366,5 +366,8 @@ class DialogCommand(QDialog, Ui_Dialog):
 
             # Write to port
             self.port.write(payload)
+
+            self.lineEdit_selected_command.clear()
+            
         except Exception as e:
             QMessageBox.warning(self, "Send Command Error", f"Cannot send AT command: {e}")

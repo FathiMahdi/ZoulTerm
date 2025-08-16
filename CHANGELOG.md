@@ -37,3 +37,19 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
+
+
+## [0.0.2-beta] - 2025-08-16
+
+### 🚀 Added
+- Abble to parse asscii color code.
+- Enhanced terminal setting UI.
+- Baudrate and COM port editable.
+- Able to save/retrive command list
+
+
+### 🐛 Known Issues
+- No new line added in hex mode
+
+---
+
