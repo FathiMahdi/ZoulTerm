@@ -6,7 +6,7 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>1222</width>
+    <width>1074</width>
     <height>1000</height>
    </rect>
   </property>
@@ -50,7 +50,7 @@
    <layout class="QGridLayout" name="gridLayout_4">
     <item row="0" column="0">
      <widget class="QWidget" name="widget_main_canvas" native="true">
-      <layout class="QGridLayout" name="gridLayout_2">
+      <layout class="QGridLayout" name="gridLayout">
        <item row="0" column="0">
         <layout class="QVBoxLayout" name="verticalLayout_3">
          <item>
@@ -183,7 +183,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>Connect</string>
+              <string/>
              </property>
              <property name="icon">
               <iconset resource="../../ZoulTerm.qrc">
@@ -221,7 +221,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>Disconnect</string>
+              <string/>
              </property>
              <property name="icon">
               <iconset resource="../../ZoulTerm.qrc">
@@ -244,7 +244,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>Pause</string>
+              <string/>
              </property>
              <property name="icon">
               <iconset resource="../../ZoulTerm.qrc">
@@ -267,7 +267,7 @@
               <string>Toggle Timestamp</string>
              </property>
              <property name="text">
-              <string>Timestamp</string>
+              <string/>
              </property>
              <property name="icon">
               <iconset resource="../../ZoulTerm.qrc">
@@ -290,7 +290,7 @@
               <string>Toggle Autoscroll</string>
              </property>
              <property name="text">
-              <string>Scroll</string>
+              <string/>
              </property>
              <property name="icon">
               <iconset resource="../../ZoulTerm.qrc">
@@ -298,15 +298,15 @@
              </property>
              <property name="iconSize">
               <size>
-               <width>24</width>
-               <height>24</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <property name="checkable">
               <bool>true</bool>
              </property>
              <property name="checked">
-              <bool>true</bool>
+              <bool>false</bool>
              </property>
             </widget>
            </item>
@@ -334,7 +334,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>Clear</string>
+              <string/>
              </property>
              <property name="icon">
               <iconset resource="../../ZoulTerm.qrc">
@@ -378,7 +378,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>Log</string>
+              <string/>
              </property>
              <property name="icon">
               <iconset resource="../../ZoulTerm.qrc">
@@ -413,7 +413,7 @@
               <string>Terminal configuration</string>
              </property>
              <property name="text">
-              <string>Settings</string>
+              <string/>
              </property>
              <property name="icon">
               <iconset resource="../../ZoulTerm.qrc">
@@ -451,7 +451,7 @@
               <bool>true</bool>
              </property>
              <property name="text">
-              <string>Command</string>
+              <string/>
              </property>
              <property name="icon">
               <iconset resource="../../ZoulTerm.qrc">
@@ -475,8 +475,8 @@
              </property>
              <property name="iconSize">
               <size>
-               <width>24</width>
-               <height>24</height>
+               <width>32</width>
+               <height>32</height>
               </size>
              </property>
              <item>
@@ -496,59 +496,62 @@
         </layout>
        </item>
        <item row="1" column="0">
-        <widget class="QScrollArea" name="scrollArea_terminal">
-         <property name="mouseTracking">
-          <bool>true</bool>
+        <widget class="QFrame" name="frame">
+         <property name="sizePolicy">
+          <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+           <horstretch>0</horstretch>
+           <verstretch>0</verstretch>
+          </sizepolicy>
          </property>
-         <property name="tabletTracking">
-          <bool>true</bool>
+         <property name="minimumSize">
+          <size>
+           <width>228</width>
+           <height>228</height>
+          </size>
          </property>
-         <property name="autoFillBackground">
-          <bool>true</bool>
+         <property name="frameShape">
+          <enum>QFrame::StyledPanel</enum>
          </property>
-         <property name="sizeAdjustPolicy">
-          <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
+         <property name="frameShadow">
+          <enum>QFrame::Raised</enum>
          </property>
-         <property name="widgetResizable">
-          <bool>true</bool>
-         </property>
-         <widget class="QWidget" name="scrollAreaWidgetContents">
-          <property name="geometry">
-           <rect>
-            <x>0</x>
-            <y>0</y>
-            <width>1170</width>
-            <height>818</height>
-           </rect>
-          </property>
-          <layout class="QGridLayout" name="gridLayout">
-           <item row="1" column="0">
-            <widget class="QPlainTextEdit" name="plainTextEdit_terminal">
-             <property name="minimumSize">
-              <size>
-               <width>512</width>
-               <height>800</height>
-              </size>
-             </property>
-             <property name="font">
-              <font>
-               <family>Fira Code</family>
-               <pointsize>13</pointsize>
-               <weight>75</weight>
-               <bold>true</bold>
-              </font>
-             </property>
-             <property name="mouseTracking">
-              <bool>true</bool>
-             </property>
-             <property name="tabletTracking">
-              <bool>true</bool>
-             </property>
-             <property name="autoFillBackground">
-              <bool>true</bool>
-             </property>
-             <property name="styleSheet">
-              <string notr="true">QPlainTextEdit {
+         <layout class="QGridLayout" name="gridLayout_2">
+          <item row="0" column="0">
+           <widget class="QPlainTextEdit" name="plainTextEdit_terminal">
+            <property name="sizePolicy">
+             <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+              <horstretch>0</horstretch>
+              <verstretch>0</verstretch>
+             </sizepolicy>
+            </property>
+            <property name="minimumSize">
+             <size>
+              <width>228</width>
+              <height>228</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <family>Fira Code</family>
+              <pointsize>13</pointsize>
+              <weight>75</weight>
+              <bold>true</bold>
+             </font>
+            </property>
+            <property name="mouseTracking">
+             <bool>true</bool>
+            </property>
+            <property name="tabletTracking">
+             <bool>true</bool>
+            </property>
+            <property name="toolTip">
+             <string>command</string>
+            </property>
+            <property name="autoFillBackground">
+             <bool>true</bool>
+            </property>
+            <property name="styleSheet">
+             <string notr="true">QPlainTextEdit {
   background-color: black;
   color: rgb(50, 255, 0);
   font-family: &quot;Fira Code&quot;, &quot;JetBrains Mono&quot;, &quot;Ubuntu Mono&quot;, Courier, monospace;
@@ -560,50 +563,64 @@
   border-radius: 4px;
 }
 </string>
-             </property>
-             <property name="locale">
-              <locale language="English" country="UnitedStates"/>
-             </property>
-             <property name="inputMethodHints">
-              <set>Qt::ImhNone</set>
-             </property>
-             <property name="frameShape">
-              <enum>QFrame::WinPanel</enum>
-             </property>
-             <property name="frameShadow">
-              <enum>QFrame::Sunken</enum>
-             </property>
-             <property name="verticalScrollBarPolicy">
-              <enum>Qt::ScrollBarAsNeeded</enum>
-             </property>
-             <property name="horizontalScrollBarPolicy">
-              <enum>Qt::ScrollBarAsNeeded</enum>
-             </property>
-             <property name="sizeAdjustPolicy">
-              <enum>QAbstractScrollArea::AdjustToContentsOnFirstShow</enum>
-             </property>
-             <property name="readOnly">
-              <bool>true</bool>
-             </property>
-             <property name="textInteractionFlags">
-              <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
-             </property>
-             <property name="backgroundVisible">
-              <bool>true</bool>
-             </property>
-             <property name="centerOnScroll">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
-         </widget>
+            </property>
+            <property name="locale">
+             <locale language="English" country="UnitedStates"/>
+            </property>
+            <property name="inputMethodHints">
+             <set>Qt::ImhNone</set>
+            </property>
+            <property name="frameShape">
+             <enum>QFrame::WinPanel</enum>
+            </property>
+            <property name="frameShadow">
+             <enum>QFrame::Sunken</enum>
+            </property>
+            <property name="verticalScrollBarPolicy">
+             <enum>Qt::ScrollBarAsNeeded</enum>
+            </property>
+            <property name="horizontalScrollBarPolicy">
+             <enum>Qt::ScrollBarAlwaysOff</enum>
+            </property>
+            <property name="sizeAdjustPolicy">
+             <enum>QAbstractScrollArea::AdjustToContents</enum>
+            </property>
+            <property name="tabChangesFocus">
+             <bool>true</bool>
+            </property>
+            <property name="undoRedoEnabled">
+             <bool>false</bool>
+            </property>
+            <property name="readOnly">
+             <bool>true</bool>
+            </property>
+            <property name="overwriteMode">
+             <bool>false</bool>
+            </property>
+            <property name="textInteractionFlags">
+             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+            </property>
+            <property name="backgroundVisible">
+             <bool>true</bool>
+            </property>
+            <property name="centerOnScroll">
+             <bool>true</bool>
+            </property>
+           </widget>
+          </item>
+         </layout>
         </widget>
        </item>
        <item row="2" column="0">
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
-         <item>
+        <layout class="QGridLayout" name="gridLayout_3">
+         <item row="0" column="0">
           <widget class="QLineEdit" name="lineEdit_sendMSG">
+           <property name="sizePolicy">
+            <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+             <horstretch>0</horstretch>
+             <verstretch>0</verstretch>
+            </sizepolicy>
+           </property>
            <property name="autoFillBackground">
             <bool>true</bool>
            </property>
@@ -618,7 +635,27 @@
            </property>
           </widget>
          </item>
-         <item>
+         <item row="0" column="2">
+          <widget class="QPushButton" name="pushButton_SendMSG">
+           <property name="statusTip">
+            <string>send msg</string>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="icon">
+            <iconset resource="../../ZoulTerm.qrc">
+             <normaloff>:/resources/assets/icons/send.png</normaloff>:/resources/assets/icons/send.png</iconset>
+           </property>
+           <property name="iconSize">
+            <size>
+             <width>24</width>
+             <height>24</height>
+            </size>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="1">
           <widget class="QComboBox" name="comboBox_msgFormat">
            <property name="toolTip">
             <string>msg format</string>
@@ -639,23 +676,6 @@
              <string>Hex</string>
             </property>
            </item>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_SendMSG">
-           <property name="text">
-            <string>Send</string>
-           </property>
-           <property name="icon">
-            <iconset resource="../../ZoulTerm.qrc">
-             <normaloff>:/resources/assets/icons/send.png</normaloff>:/resources/assets/icons/send.png</iconset>
-           </property>
-           <property name="iconSize">
-            <size>
-             <width>24</width>
-             <height>24</height>
-            </size>
-           </property>
           </widget>
          </item>
         </layout>
@@ -718,7 +738,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>1222</width>
+     <width>1074</width>
      <height>28</height>
     </rect>
    </property>

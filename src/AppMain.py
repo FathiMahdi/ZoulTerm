@@ -102,10 +102,14 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             self.pause_serial = False
 
     def ScrollHandler(self):
+
+        scroll_bar = self.plainTextEdit_terminal.verticalScrollBar()
+
         if self.pushButton_scroll.isChecked(): 
-            self.scrollArea_terminal.setWidgetResizable(True)
-        else:
-            self.scrollArea_terminal.setWidgetResizable(False)
+
+            scroll_bar.setValue(scroll_bar.maximum()) 
+   
+    
             
 
     def TriggerTimeStamp(self):
