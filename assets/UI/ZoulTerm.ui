@@ -33,6 +33,9 @@
   <property name="tabletTracking">
    <bool>true</bool>
   </property>
+  <property name="focusPolicy">
+   <enum>Qt::ClickFocus</enum>
+  </property>
   <property name="windowTitle">
    <string>ZoulTerm V0.0.2</string>
   </property>
@@ -298,8 +301,8 @@
              </property>
              <property name="iconSize">
               <size>
-               <width>32</width>
-               <height>32</height>
+               <width>24</width>
+               <height>24</height>
               </size>
              </property>
              <property name="checkable">
@@ -475,8 +478,8 @@
              </property>
              <property name="iconSize">
               <size>
-               <width>32</width>
-               <height>32</height>
+               <width>24</width>
+               <height>24</height>
               </size>
              </property>
              <item>
@@ -496,7 +499,7 @@
         </layout>
        </item>
        <item row="1" column="0">
-        <widget class="QFrame" name="frame">
+        <widget class="QFrame" name="frame_terminal">
          <property name="sizePolicy">
           <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
            <horstretch>0</horstretch>
@@ -598,7 +601,7 @@
              <bool>false</bool>
             </property>
             <property name="textInteractionFlags">
-             <set>Qt::LinksAccessibleByMouse|Qt::TextSelectableByMouse</set>
+             <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
             </property>
             <property name="backgroundVisible">
              <bool>true</bool>
@@ -731,6 +734,7 @@
    <addaction name="separator"/>
    <addaction name="actionSendCommand"/>
    <addaction name="separator"/>
+   <addaction name="actionShowGraph"/>
    <addaction name="actionAbout"/>
   </widget>
   <widget class="QMenuBar" name="menubar">
@@ -986,6 +990,21 @@
     <font>
      <pointsize>13</pointsize>
     </font>
+   </property>
+  </action>
+  <action name="actionShowGraph">
+   <property name="checkable">
+    <bool>false</bool>
+   </property>
+   <property name="icon">
+    <iconset resource="../../ZoulTerm.qrc">
+     <normaloff>:/resources/assets/icons/line-chart.png</normaloff>:/resources/assets/icons/line-chart.png</iconset>
+   </property>
+   <property name="text">
+    <string>ShowGraph</string>
+   </property>
+   <property name="toolTip">
+    <string>Serial Viewer</string>
    </property>
   </action>
  </widget>

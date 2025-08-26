@@ -1,5 +1,6 @@
 <RCC>
   <qresource prefix="resources">
+    <file>assets/icons/line-chart.png</file>
     <file>assets/icons/scroll.png</file>
     <file>assets/icons/timestamp.png</file>
     <file>assets/icons/app_icon_on.svg</file>

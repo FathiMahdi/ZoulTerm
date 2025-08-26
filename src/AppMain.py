@@ -17,7 +17,7 @@ from AppAbout      import *
 from AppTerminal   import *
 from AppConnection import *
 from AppSerial     import *
-
+from AppSerialViewer import *
 
 
 
@@ -60,6 +60,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.TerminalSearchTriggered = False
         self.actionAbout.triggered.connect(About_clicked)
         self.actionConnect.triggered.connect(self.Connect_clicked)
+        self.actionShowGraph.triggered.connect(self.Graph_clicked)
         self.actionClear_terminal.triggered.connect(self.clear_terminal)
         self.pushButton_terminal_clear.clicked.connect(self.clear_terminal)
         self.actionlog_terminal.triggered.connect(self.log_terminal)
@@ -521,6 +522,22 @@ class MyWindow(QMainWindow, Ui_MainWindow):
          
         # Ensure the connection is successfully opened
 
+    def Graph_clicked(self):
+
+        if self.serial_connection and self.serial_connection.is_open:
+
+            self.graph = DialogShowGraph()
+            self.graph.show()
+
+            if hasattr(self, "serial_reader_thread"):
+                self.serial_reader_thread.new_data_signal.connect(self.graph.handle_serial_line)
+
+        else:
+            QMessageBox.warning(self, "Serial Viewer", "No device connected")
+
+        # graph.serial_connection_signal.connect(self.on_serial_connected)
+        # graph.exec_()
+            
 
     ##############################################################################################
         

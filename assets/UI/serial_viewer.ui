@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form_serial_viewer</class>
+ <widget class="QWidget" name="Form_serial_viewer">
+  <property name="windowModality">
+   <enum>Qt::WindowModal</enum>
+  </property>
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>624</width>
+    <height>501</height>
+   </rect>
+  </property>
+  <property name="font">
+   <font>
+    <pointsize>13</pointsize>
+   </font>
+  </property>
+  <property name="focusPolicy">
+   <enum>Qt::ClickFocus</enum>
+  </property>
+  <property name="windowTitle">
+   <string>Serial Viwer</string>
+  </property>
+  <property name="windowIcon">
+   <iconset resource="../../ZoulTerm.qrc">
+    <normaloff>:/resources/assets/icons/app_icon_on.svg</normaloff>:/resources/assets/icons/app_icon_on.svg</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <item>
+      <widget class="QPushButton" name="pushButton_refresh_variable_list">
+       <property name="text">
+        <string>Refresh Variable list</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../ZoulTerm.qrc">
+         <normaloff>:/resources/assets/icons/refresh.png</normaloff>:/resources/assets/icons/refresh.png</iconset>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_serial_viewer_settings">
+       <property name="text">
+        <string>Settings</string>
+       </property>
+       <property name="icon">
+        <iconset resource="../../ZoulTerm.qrc">
+         <normaloff>:/resources/assets/icons/advanced.png</normaloff>:/resources/assets/icons/advanced.png</iconset>
+       </property>
+      </widget>
+     </item>
+    </layout>
+   </item>
+   <item row="1" column="0">
+    <widget class="QListWidget" name="listWidget_variable_list">
+     <property name="maximumSize">
+      <size>
+       <width>300</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="dragEnabled">
+      <bool>true</bool>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QScrollArea" name="scrollArea_serial_viewer">
+     <property name="minimumSize">
+      <size>
+       <width>480</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="widgetResizable">
+      <bool>true</bool>
+     </property>
+     <widget class="QWidget" name="scrollAreaWidgetContents">
+      <property name="geometry">
+       <rect>
+        <x>0</x>
+        <y>0</y>
+        <width>478</width>
+        <height>444</height>
+       </rect>
+      </property>
+     </widget>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources>
+  <include location="../../ZoulTerm.qrc"/>
+ </resources>
+ <connections/>
+</ui>
