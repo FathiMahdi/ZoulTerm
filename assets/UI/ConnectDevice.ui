@@ -33,7 +33,7 @@
   </property>
   <property name="font">
    <font>
-    <pointsize>11</pointsize>
+    <pointsize>9</pointsize>
    </font>
   </property>
   <property name="windowTitle">
@@ -68,7 +68,7 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>9</pointsize>
         </font>
        </property>
        <property name="autoFillBackground">
@@ -484,7 +484,7 @@
        </property>
        <property name="font">
         <font>
-         <pointsize>11</pointsize>
+         <pointsize>9</pointsize>
         </font>
        </property>
        <property name="autoFillBackground">
@@ -671,7 +671,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>11</pointsize>
+       <pointsize>9</pointsize>
       </font>
      </property>
      <property name="autoFillBackground">
@@ -712,7 +712,7 @@
      </property>
      <property name="font">
       <font>
-       <pointsize>11</pointsize>
+       <pointsize>9</pointsize>
       </font>
      </property>
      <property name="autoFillBackground">
@@ -755,7 +755,7 @@
            <x>0</x>
            <y>0</y>
            <width>455</width>
-           <height>121</height>
+           <height>124</height>
           </rect>
          </property>
          <layout class="QGridLayout" name="gridLayout_16"/>

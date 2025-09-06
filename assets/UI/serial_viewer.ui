@@ -15,7 +15,7 @@
   </property>
   <property name="font">
    <font>
-    <pointsize>11</pointsize>
+    <pointsize>9</pointsize>
    </font>
   </property>
   <property name="focusPolicy">
@@ -88,7 +88,7 @@
         <x>0</x>
         <y>0</y>
         <width>478</width>
-        <height>446</height>
+        <height>449</height>
        </rect>
       </property>
      </widget>

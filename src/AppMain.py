@@ -11,7 +11,7 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 import os
 import re
 from ZoulTerm_ui import Ui_MainWindow
-from evaq_config_main_rc import *
+from ZoulTerm_rc import *
 
 from  terminal_settings_ui import *
 from AppAbout      import *
