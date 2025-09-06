@@ -22,17 +22,19 @@ pip install -r requirements.txt || echo "⚠️ Failed to install some dependenc
 echo "🧹 Cleaning previous build artifacts..."
 rm -rf build dist __pycache__ *.spec
 
+echo "📦 Generating resource files..."
+bash rc_convert.sh
+
 echo "🎨 Converting UI files..."
 bash ui_convert.sh
 
-echo "📦 Generating resource files..."
-bash rc_convert.sh
 
 echo "🚀 Building executable with PyInstaller..."
 pyinstaller \
     --windowed \
     --onefile \
     --name "ZoulTerm" \
+    --icon=assets/icons/app_icon_on.png \
     --hidden-import=PyQt5.QtSvg \
     src/main.py
 

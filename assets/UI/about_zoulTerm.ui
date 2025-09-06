@@ -72,7 +72,7 @@
          </property>
          <property name="font">
           <font>
-           <pointsize>14</pointsize>
+           <pointsize>11</pointsize>
           </font>
          </property>
          <property name="autoFillBackground">
@@ -91,7 +91,7 @@ is an open-source, Qt-based serial monitor for users who work with embedded syst
 
 Fathi Mahdi (DigitalZoul)
 6 Aug 2025
-Version: Beta-1.0.0</string>
+Version: 1.0.0</string>
          </property>
         </widget>
        </item>

@@ -30,7 +30,7 @@
   </property>
   <property name="font">
    <font>
-    <pointsize>13</pointsize>
+    <pointsize>11</pointsize>
    </font>
   </property>
   <property name="windowTitle">
@@ -39,6 +39,9 @@
   <property name="windowIcon">
    <iconset resource="../../ZoulTerm.qrc">
     <normaloff>:/resources/assets/icons/app_icon_on.svg</normaloff>:/resources/assets/icons/app_icon_on.svg</iconset>
+  </property>
+  <property name="autoFillBackground">
+   <bool>true</bool>
   </property>
   <layout class="QGridLayout" name="gridLayout_2">
    <item row="0" column="0">
@@ -54,6 +57,9 @@
        <width>72</width>
        <height>100</height>
       </size>
+     </property>
+     <property name="autoFillBackground">
+      <bool>true</bool>
      </property>
      <property name="frameShape">
       <enum>QFrame::StyledPanel</enum>

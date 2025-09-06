@@ -24,7 +24,7 @@
   </property>
   <property name="font">
    <font>
-    <pointsize>14</pointsize>
+    <pointsize>11</pointsize>
    </font>
   </property>
   <property name="mouseTracking">
@@ -745,7 +745,7 @@
      <x>0</x>
      <y>0</y>
      <width>1074</width>
-     <height>28</height>
+     <height>24</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuAbout">
