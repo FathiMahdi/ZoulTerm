@@ -13,6 +13,7 @@ import re
 from ZoulTerm_ui import Ui_MainWindow
 from evaq_config_main_rc import *
 
+from  terminal_settings_ui import *
 from AppAbout      import *
 from AppTerminal   import *
 from AppConnection import *
@@ -29,19 +30,27 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
         self.setupUi(self)
 
-        # === ANSI formatting defaults ===
-        self.current_format = QTextCharFormat()
-        self.current_format.setForeground(QBrush(Qt.green))  # Default text color
-        self.current_format.setBackground(QBrush(Qt.black))  # Default background
+        # Status indicator as a colored circle
+        self.connection_status_label = QLabel("Disconnected")
+        self.connection_status_label.setStyleSheet("""
+            QLabel {
+                color: red;
+                font-weight: bold;
+                font-size: 16px;
+            }
+        """)
 
-        # Create a custom label for the connection status
-        self.connection_status_label = QLabel("  Disconnected  ❌")
-
-        # Create a status bar
+        # Add to status bar
         status_bar = QStatusBar(self)
-
-        # Add connection status label to the left side of the status bar
         status_bar.addWidget(self.connection_status_label)
+        self.setStatusBar(status_bar)
+
+        # disable auto scroll
+        self.plainTextEdit_terminal.moveCursor(QTextCursor.Start)
+        self.plainTextEdit_terminal.ensureCursorVisible()
+
+        # apply terminal settings when start
+        self.set_default_terminal_settings()
 
         # Set the status bar for the window
         self.setStatusBar(status_bar)
@@ -57,6 +66,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.MSGFormat           = 'Text'
         self.MonitorFormat       = 'Text'
         self.LogFileName         = ''
+        self.EnableAutoScroll    = False
         self.TerminalSearchTriggered = False
         self.actionAbout.triggered.connect(About_clicked)
         self.actionConnect.triggered.connect(self.Connect_clicked)
@@ -68,7 +78,6 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.pushButton_terminal_log.clicked.connect(self.log_terminal)
         self.pushButton_disconnect.clicked.connect(self.disconnect_serial)
         self.pushButton_connect.clicked.connect(self.Connect_clicked)
-        self.actionSetupConnection.triggered.connect(self.SetupConnection_clicked)
         self.actionDisconnect.triggered.connect(self.disconnect_serial)
         self.pushButton_search.clicked.connect(self.TriggerTerminalSearch)
         self.pushButton_timestamp.clicked.connect(self.TriggerTimeStamp)
@@ -80,7 +89,8 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.actionTerminal_settings.triggered.connect(self.open_terminal_settings)
         self.toolButton_search_up.clicked.connect(self.navigate_up)
         self.toolButton_search_down.clicked.connect(self.navigate_down)
-        
+        self.actionSetupConnection.triggered.connect(self.SetupConnection_clicked)
+        # self.pushButton_apply.clicked.connect(self.set_terminal_settings)
 
 
         self.reconnect_timer = QTimer(self)
@@ -88,8 +98,9 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         self.reconnect_timer.timeout.connect(self.check_serial_connection)
         self.reconnect_timer.timeout.connect(self.search_terminal)
         self.reconnect_timer.start(500) 
-    
 
+
+   
     def TriggerTerminalSearch(self):
 
         if not self.TerminalSearchTriggered:
@@ -104,11 +115,11 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
     def ScrollHandler(self):
 
-        scroll_bar = self.plainTextEdit_terminal.verticalScrollBar()
+        if not self.EnableAutoScroll:
+            self.EnableAutoScroll = True
+        else:
+            self.EnableAutoScroll = False
 
-        if self.pushButton_scroll.isChecked(): 
-
-            scroll_bar.setValue(scroll_bar.maximum()) 
    
     
             
@@ -224,27 +235,36 @@ class MyWindow(QMainWindow, Ui_MainWindow):
     ##############################################################################################
 
     def open_terminal_settings(self):
-        """Open the terminal settings dialog"""
-        dialog = TerminalSettingsDialog(self)
-        dialog.exec_()  # Show dialog and block until it's closed
+        dlg = TerminalSettingsDialog(
+            parent=self,
+            current_font=self.plainTextEdit_terminal.font(),
+            current_font_size=self.plainTextEdit_terminal.font().pointSize(),
+            current_bg_color=self.plainTextEdit_terminal.palette().color(QPalette.Base),
+            current_text_color=self.plainTextEdit_terminal.palette().color(QPalette.Text),
+            current_encoding=self.encoding,  
+            enable_timestamp=self.enable_timestamp
+        )
+        dlg.exec_()
 
     ##############################################################################################
 
     def apply_terminal_display_settings(self, font, font_size, bg_color, text_color, encoding,enable_timestamp):
    
-
         self.plainTextEdit_terminal.setFont(QFont(font.family(), font_size))
         
-        # Set the background and text colors
-        self.plainTextEdit_terminal.setStyleSheet(f"""
-            background-color: {bg_color.name()};
-            color: {text_color.name()};
-        """)
-
-        self.enable_timestamp = enable_timestamp  # Save timestamp preference
+        self.enable_timestamp = enable_timestamp  
 
         self.encoding = encoding
 
+        self.plainTextEdit_terminal.setStyleSheet(f"""
+            QPlainTextEdit {{
+                background-color: {bg_color.name()};
+                color: {text_color.name()};
+                font-weight: bold;
+                padding: 4px;
+                border-radius: 4px;
+            }}
+        """)
     ##############################################################################################
 
 
@@ -274,48 +294,58 @@ class MyWindow(QMainWindow, Ui_MainWindow):
             print(f"Temporary JSON file {temp_filename} does not exist, cannot delete.")
          
 
-    def ansi_apply_format(self, cursor, codes):
-   
+    def ansi_apply_format(self, codes):
+
         for code in codes:
             if code == 0:  # reset
                 self.current_format = QTextCharFormat()
-                self.current_format.setForeground(QBrush(Qt.green))
-                self.current_format.setBackground(QBrush(Qt.black))
+                fg = self.plainTextEdit_terminal.palette().color(QPalette.Text)
+                bg = self.plainTextEdit_terminal.palette().color(QPalette.Base)
+                self.current_format.setForeground(QBrush(fg))
+                self.current_format.setBackground(QBrush(bg))
+
             elif 30 <= code <= 37:  # foreground
-                colors = [Qt.black, Qt.red, Qt.green, Qt.yellow, Qt.blue, Qt.magenta, Qt.cyan, Qt.white]
+                colors = [Qt.black, Qt.red, Qt.green, Qt.yellow,
+                        Qt.blue, Qt.magenta, Qt.cyan, Qt.white]
                 self.current_format.setForeground(QBrush(colors[code - 30]))
+
             elif 40 <= code <= 47:  # background
-                colors = [Qt.black, Qt.red, Qt.green, Qt.yellow, Qt.blue, Qt.magenta, Qt.cyan, Qt.white]
+                colors = [Qt.black, Qt.red, Qt.green, Qt.yellow,
+                        Qt.blue, Qt.magenta, Qt.cyan, Qt.white]
                 self.current_format.setBackground(QBrush(colors[code - 40]))
+
             elif code == 1:  # bold
                 self.current_format.setFontWeight(QFont.Bold)
+
             elif code == 22:  # normal weight
                 self.current_format.setFontWeight(QFont.Normal)
 
-        cursor.setCharFormat(self.current_format)
 
     def ansi_insert_text(self, text):
-
-      
+  
         cursor = self.plainTextEdit_terminal.textCursor()
+        cursor.movePosition(QTextCursor.End)  # always append at the end
+
         pattern = re.compile(r'\x1b\[([0-9;]*)m')
         pos = 0
+        had_code = False
 
         for match in pattern.finditer(text):
-
-            # insert text before code
+            # Insert plain text before ANSI code
             before = text[pos:match.start()]
             if before:
                 cursor.insertText(before, self.current_format)
 
-            # parse ANSI codes
+            # Parse and apply ANSI codes
             codes = [int(c) if c else 0 for c in match.group(1).split(';')]
-            self.ansi_apply_format(cursor, codes)
+            self.ansi_apply_format(codes)
+            had_code = True
             pos = match.end()
 
-        # insert remainder
+        # Insert any remaining text
         if pos < len(text):
-            cursor.insertText(text[pos:], self.current_format)
+            cursor.insertText(text[pos:], self.current_format if had_code else QTextCharFormat())
+
 
     ##############################################################################################
 
@@ -339,7 +369,7 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
                 if self.serial_connection.isOpen():
                     # Open a file save dialog
-                    self.LogFileName, _ = QFileDialog.getSaveFileName(self, "Save Config", "", "Text Files (*.json);;All Files (*)")
+                    self.LogFileName, _ = QFileDialog.getSaveFileName(self, "Save Log", "", "Text Files (*.txt);;All Files (*)")
 
                     # If the user selected a file
                     if self.LogFileName:
@@ -357,10 +387,16 @@ class MyWindow(QMainWindow, Ui_MainWindow):
                             QMessageBox.information(self, "Terminal log", f"Log saved to: {self.LogFileName}")
 
                         except Exception as e:
+                            self.pushButton_terminal_log.setChecked(False)
+                            self.isLogTriggered = False
                             print(f"Error saving file: {e}") 
                 else:
+                    self.pushButton_terminal_log.setChecked(False)
+                    self.isLogTriggered = False
                     QMessageBox.warning(self, "Serial Log Error", f"Port is disconnected")                  
             else:
+                self.pushButton_terminal_log.setChecked(False)
+                self.isLogTriggered = False
                 QMessageBox.warning(self, "Serial Log Error", f"Port is disconnected") 
 
         else:
@@ -399,11 +435,12 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
     def update_connection_status(self, is_connected):
 
-       status_message = "  Connected  ✅" if is_connected else "  Disconnected  ❌"
-
-       if self.connection_status_label.text() != status_message:
-           self.connection_status_label.setText(status_message)
-       
+        if is_connected:
+            self.connection_status_label.setText("● Connected")
+            self.connection_status_label.setStyleSheet("color: green; font-weight: bold; font-size: 16px;")
+        else:
+            self.connection_status_label.setText("● Disconnected")
+            self.connection_status_label.setStyleSheet("color: red; font-weight: bold; font-size: 16px;")   
 
     ##############################################################################################
 
@@ -439,6 +476,30 @@ class MyWindow(QMainWindow, Ui_MainWindow):
         except Exception as e:
             print("Cannot reconnect to port {}",e)
 
+    def set_default_terminal_settings(self):
+
+        temp_filename = os.path.expanduser("~/.zoulterm_terminal_settings.json")
+
+        try:
+            if os.path.exists(temp_filename):
+                with open(temp_filename, 'r', encoding='utf-8') as f:
+                    data =  json.load(f)
+        
+                if data:
+                    font = (QFont(data.get("font_name", "Courier")))
+                    font_size = data.get("font_size", 13)
+                    bg_color = hex_to_qcolor(data.get("bg_color", "#000000"))
+                    text_color = hex_to_qcolor(data.get("text_color", "#00FF00"))
+                    encoding = data.get("encoding", "UTF-8")
+                    timestamp = data.get("timestamp_checkbox", False)
+
+                    self.apply_terminal_display_settings(font,font_size,bg_color,text_color,encoding,timestamp)
+            else :
+                self.apply_terminal_display_settings(QFont("Courier"),13,hex_to_qcolor("#000000"),hex_to_qcolor("#00FF00"),"UTF-8",False)
+
+        except Exception as e:
+            print(f"Error: {e}")
+            self.apply_terminal_display_settings(QFont("Courier"),13,hex_to_qcolor("#000000"),hex_to_qcolor("#00FF00"),"UTF-8",False) 
 
     ##############################################################################################
 
@@ -472,12 +533,22 @@ class MyWindow(QMainWindow, Ui_MainWindow):
 
                     timestamp = self.get_timestamp()
                     data_with_timestamp = f"-> {timestamp} : {data}"
-                    #self.plainTextEdit_terminal.appendPlainText(data_with_timestamp)
                     self.ansi_insert_text(data_with_timestamp)
+                    # self.plainTextEdit_terminal.appendPlainText(data_with_timestamp)
+         
+                    if self.EnableAutoScroll :
+                        self.plainTextEdit_terminal.moveCursor(QTextCursor.End)
+                        self.plainTextEdit_terminal.ensureCursorVisible()
 
                 else:
-                    # self.plainTextEdit_terminal.appendPlainText(data)
                     self.ansi_insert_text(data)
+                    # self.plainTextEdit_terminal.appendPlainText(data)
+
+               
+                    if self.EnableAutoScroll :
+                        self.plainTextEdit_terminal.moveCursor(QTextCursor.End)
+                        self.plainTextEdit_terminal.ensureCursorVisible()
+       
 
                 if self.isLogTriggered and self.LogFileName:
 

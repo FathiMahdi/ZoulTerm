@@ -25,7 +25,7 @@ class DialogConnectDevice(QDialog, Ui_DialogConnect):
         self.temp_filename = temp_filename
 
         # Connect the refresh button to the function to update the serial ports
-        self.pushButton.clicked.connect(self.refresh_ports)
+        self.commandLinkButton_refresh.clicked.connect(self.refresh_ports)
         self.commandLinkButton_connect.clicked.connect(self.connect_to_port)
         self.commandLinkButton_cancel.clicked.connect(self.cancel_connection)
         self.commandLinkButton_load.clicked.connect(self.load_serial_config)
@@ -34,7 +34,7 @@ class DialogConnectDevice(QDialog, Ui_DialogConnect):
         # prepare ports
         self.refresh_ports()
 
-
+       
         if self.temp_filename:
              # load tempory info if any
             TempConf = self.load_temp_json(self.temp_filename)
@@ -42,9 +42,11 @@ class DialogConnectDevice(QDialog, Ui_DialogConnect):
                 self.comboBox_port.setCurrentText(TempConf.get('port', ''))
                 self.comboBox_speed.setCurrentText(TempConf.get('speed', ''))
                 self.comboBox_data.setCurrentText(TempConf.get('data_bits', '8'))  # Default to 8 bits if not found
+                self.comboBox_parity.setCurrentText(TempConf.get('parity_check', 'none'))
                 self.comboBox_stop_bits.setCurrentText(TempConf.get('stop_bits', '1'))  # Default to 1 stop bit if not found
                 self.comboBox_flow_control.setCurrentText(TempConf.get('flow_control', 'none'))
-                self.lineEdit.setText(TempConf.get('transmit_delay', '0'))  # Default to 0 if not found
+                self.spinBox_rx_timeout.setValue(int(TempConf.get('timeout', '1')))
+                self.spinBox_tx_timeout.setValue(int(TempConf.get('tx_delay','0')))
 
 
         if not self.scrollArea_port_info.layout():
@@ -66,9 +68,11 @@ class DialogConnectDevice(QDialog, Ui_DialogConnect):
                 'port': self.comboBox_port.currentText(),
                 'speed': self.comboBox_speed.currentText(),
                 'data_bits': self.comboBox_data.currentText(),
+                'parity_check': self.comboBox_parity.currentText(),
                 'stop_bits': self.comboBox_stop_bits.currentText(),
                 'flow_control': self.comboBox_flow_control.currentText(),
-                'transmit_delay': self.lineEdit.text()  # Get the transmit delay from the QLineEdit
+                'timeout': str(self.spinBox_rx_timeout.value()),
+                'tx_delay':str(self.spinBox_tx_timeout.value()),
             }
 
             try:
@@ -98,9 +102,11 @@ class DialogConnectDevice(QDialog, Ui_DialogConnect):
                 self.comboBox_port.setCurrentText(config_data.get('port', ''))
                 self.comboBox_speed.setCurrentText(config_data.get('speed', ''))
                 self.comboBox_data.setCurrentText(config_data.get('data_bits', '8'))  # Default to 8 bits if not found
+                self.comboBox_parity.setCurrentText(config_data.get('parity_check', 'none'))
                 self.comboBox_stop_bits.setCurrentText(config_data.get('stop_bits', '1'))  # Default to 1 stop bit if not found
                 self.comboBox_flow_control.setCurrentText(config_data.get('flow_control', 'none'))
-                self.lineEdit.setText(config_data.get('transmit_delay', '0'))  # Default to 0 if not found
+                self.spinBox_rx_timeout.setValue(int(config_data.get('timeout', '1')))
+                self.spinBox_tx_timeout.setValue(int(config_data.get('tx_delay', '0')))  
 
                 QMessageBox.information(self, "Loaded", f"Port configuration loaded from {file_name}")
             
@@ -138,9 +144,57 @@ class DialogConnectDevice(QDialog, Ui_DialogConnect):
         port = self.comboBox_port.currentText()  # Get the selected port
         baud_rate = self.comboBox_speed.currentText()  # Get the selected baud rate
         data_bits = self.comboBox_data.currentText()
+        parity_check = self.comboBox_parity.currentText()
         stop_bits = self.comboBox_stop_bits.currentText()
+        timeout = self.spinBox_rx_timeout.value()
+        tx_delay = self.spinBox_tx_timeout.value()
         flow_control = self.comboBox_flow_control.currentText()
+        user_xonxoff = False
+        user_rtscts  = False
+        user_dsrdtr  = False
+        
+        #check flow control settings
+        if flow_control == 'Xon/Xoff':
+            user_xonxoff = True
 
+        elif flow_control == 'RTS/CTS':
+            user_rtscts = True
+
+        elif flow_control == 'DSR/DTR':
+            user_dsrdtr = True
+
+        elif flow_control == 'none':
+            user_xonxoff = False
+            user_rtscts  = False 
+            user_dsrdtr  = False
+
+        else : 
+            user_xonxoff = False
+            user_rtscts  = False 
+            user_dsrdtr  = False 
+
+        
+
+        # convert parity check to pyserial parity check type
+        if parity_check == "none":
+            parity_check = serial.PARITY_NONE
+
+        elif parity_check == "odd":
+            parity_check = serial.PARITY_ODD
+
+        elif parity_check == "even":
+            parity_check = serial.PARITY_EVEN
+
+        elif parity_check == "mark":
+            parity_check = serial.PARITY_MARK
+
+        elif parity_check == "space":
+            parity_check = serial.PARITY_SPACE
+
+        else :
+            parity_check = serial.PARITY_NONE
+
+                                              
         try:
             
             # Close the existing connection if any
@@ -151,11 +205,27 @@ class DialogConnectDevice(QDialog, Ui_DialogConnect):
             self.serial_connection = serial.Serial(
                 port,
                 baudrate=int(baud_rate),
-                timeout=1,
-                parity=serial.PARITY_NONE,
-                stopbits=serial.STOPBITS_ONE,
-                bytesize=serial.EIGHTBITS
+                timeout=int(timeout),
+                parity=parity_check,
+                stopbits=float(stop_bits),
+                bytesize = int(data_bits),
+                write_timeout=int(tx_delay),
+                xonxoff=user_xonxoff,
+                rtscts=user_rtscts,
+                dsrdtr=user_dsrdtr
             )
+
+            # for debugging only
+            # print(f" buadrate      : {self.serial_connection.baudrate}\n")
+            # print(f" rx timeout    : {self.serial_connection.timeout}\n")
+            # print(f" parity        : {self.serial_connection.parity}\n")
+            # print(f" stopbits      : {self.serial_connection.stopbits}\n")
+            # print(f" bytesize      : {self.serial_connection.bytesize}\n")
+            # print(f" write_timeout : {self.serial_connection.write_timeout}\n")
+            # print(f" xonxoff       : {self.serial_connection.xonxoff}\n")
+            # print(f" rtscts        : {self.serial_connection.rtscts}\n")
+            # print(f" dsrdtr        : {self.serial_connection.dsrdtr}\n")
+
 
             # Ensure the connection is successfully opened
             if not self.serial_connection.is_open:
@@ -173,9 +243,11 @@ class DialogConnectDevice(QDialog, Ui_DialogConnect):
                 'port': self.comboBox_port.currentText(),
                 'speed': self.comboBox_speed.currentText(),
                 'data_bits': self.comboBox_data.currentText(),
+                'parity_check': self.comboBox_parity.currentText(),
                 'stop_bits': self.comboBox_stop_bits.currentText(),
                 'flow_control': self.comboBox_flow_control.currentText(),
-                'transmit_delay': self.lineEdit.text()  # Get the transmit delay from the QLineEdit
+                'timeout': str(self.spinBox_rx_timeout.value()),
+                'tx_delay':str(self.spinBox_tx_timeout.value()),
             }
 
             # save current connection info

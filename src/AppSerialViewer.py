@@ -4,7 +4,10 @@ from PyQt5.QtGui import *
 from PyQt5.QtWidgets import *
 from PyQt5.QtCore import pyqtSignal
 import pyqtgraph as pg
+import numpy as np
 
+
+MAX_POINTS = 2000
 
 class DropPlotWidget(pg.PlotWidget):
     variableDropped = pyqtSignal(str)
@@ -121,17 +124,26 @@ class DialogShowGraph(QDialog, Ui_Form_serial_viewer):
         return variables
 
     def refreshVariables(self):
+
         if self.last_line:
-            variables = self.GetVariables(self.last_line)
-            self.listWidget_variable_list.clear()
-            self.listWidget_variable_list.addItems(variables.keys())
+
+            try:
+                variables = self.GetVariables(self.last_line)
+                self.listWidget_variable_list.clear()
+                self.listWidget_variable_list.addItems(variables.keys())
+
+            except Exception as e:
+                QMessageBox.warning(self, "Serial Viewer", f"ERROR: {e}")
+
+            if len(variables) == 0:
+                QMessageBox.warning(self, "Serial Viewer", "Data is not detectd !!")
         else:
             QMessageBox.warning(self, "Serial Viewer", "Data is not detectd !!")
 
 
     def SerialDataHandler(self, line):
-        variables = self.GetVariables(line)
-        self.updateCurves(variables)
+        # variables = self.GetVariables(line)
+        self.updateCurves()
 
    
     def CreateGraph(self):
@@ -143,16 +155,18 @@ class DialogShowGraph(QDialog, Ui_Form_serial_viewer):
         layout = QVBoxLayout(self.scrollAreaWidgetContents)
         layout.addWidget(self.plot_widget)
 
+
     def addCurve(self, var_name):
         if var_name not in self.curves:
-            pen = pg.mkPen(color=pg.intColor(len(self.curves)),width=4.5)
+            pen = pg.mkPen(color=pg.intColor(len(self.curves)), width=2)
             curve = self.plot_widget.plot([], [], pen=pen, name=var_name)
             self.curves[var_name] = curve
-            self.data[var_name] = []
+
+            # initialize buffer correctly
+            self.data[var_name] = np.zeros(MAX_POINTS, dtype=float)
 
             sample, label = self.legend.items[-1]  # last added item
             self.legend_items[var_name] = label
-
 
     def showLegendContextMenu(self, pos, var_name, label):
         menu = QMenu()
@@ -173,12 +187,24 @@ class DialogShowGraph(QDialog, Ui_Form_serial_viewer):
                 label.deleteLater()
                 del self.legend_items[var_name]
 
-    def updateCurves(self, vars_dict):
-        for var_name, val in vars_dict.items():
-            if var_name in self.curves:
-                self.data[var_name].append(val)
-                xdata = list(range(len(self.data[var_name])))
-                self.curves[var_name].setData(xdata, self.data[var_name])
+    def updateCurves(self):
+
+        if not self.last_line:
+            return
+
+        try:
+
+            variables = self.GetVariables(self.last_line)
+
+            for var_name, val in variables.items():
+                if var_name in self.curves:
+                    buf = self.data[var_name]
+                    buf[:-1] = buf[1:]   # shift left
+                    buf[-1] = val        # insert new value
+                    self.curves[var_name].setData(np.arange(MAX_POINTS), buf)
+
+        except Exception as e:
+                print(f"ERROR: {e}")
 
     def PlotUpdate(self):
         if hasattr(self, "last_line") and self.last_line:
@@ -187,4 +213,4 @@ class DialogShowGraph(QDialog, Ui_Form_serial_viewer):
     def UpdateGraph(self):
         self.timer = QTimer()
         self.timer.timeout.connect(self.PlotUpdate)
-        self.timer.start(1)  
+        self.timer.start(30)  

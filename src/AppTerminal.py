@@ -5,6 +5,8 @@ from PyQt5 import uic
 import json
 import os
 from send_Command import Ui_Dialog 
+from terminal_settings_ui import Ui_DialogTerminalSettings
+
 
 def user_config_path(filename: str) -> str:
     """
@@ -25,129 +27,61 @@ def hex_to_qcolor(hexstr: str) -> QColor:
     except Exception:
         return QColor(0, 0, 0)
 
-class TerminalSettingsDialog(QDialog):
-
+class TerminalSettingsDialog(QDialog, Ui_DialogTerminalSettings):
     def __init__(self, parent=None, current_font=None, current_font_size=None,
                  current_bg_color=None, current_text_color=None, current_encoding=None,
                  enable_timestamp=False):
-        super(TerminalSettingsDialog, self).__init__(parent)
+        # super().__init__(parent)
+        super(TerminalSettingsDialog, self).__init__()
+        self.setupUi(self)
 
-        self.setWindowTitle("Terminal Display Settings")
-
-        # temporary port info : move file into user config
-        self.temp_filename = user_config_path("terminal_set_temp.json")
-
-        # Store the parent and current settings for later use
         self.parent_window = parent
-        self.bg_color = current_bg_color or QColor(0, 0, 0)  # Default black
-        self.text_color = current_text_color or QColor(0, 255, 0)  # Default green
+        self.temp_filename = os.path.expanduser("~/.zoulterm_terminal_settings.json")
+
+        # defaults
+        self.bg_color = current_bg_color or QColor(0, 0, 0)
+        self.text_color = current_text_color or QColor(50, 255, 0)
         self.font = current_font or QFont("Courier")
         self.font_size = current_font_size or 13
         self.encoding = current_encoding or "UTF-8"
         self.enable_timestamp = enable_timestamp
 
-        # Use a reasonable default font size
-        self.font.setPointSize(self.font_size)
+        # initialize widgets
+        self.fontComboBox_terminal.setCurrentFont(self.font)
+        self.spinBox_fontSize.setValue(self.font_size)
 
-        # Create the layout
-        layout = QGridLayout()
-
-        # Font Settings
-        self.font_combo = QFontComboBox(self)
-        self.font_combo.setCurrentFont(self.font)
-        self.font_combo.setFont(self.font)
-
-        self.font_size_edit = QLineEdit(self)
-        # Use QIntValidator to allow only reasonable font sizes
-        int_validator = QIntValidator(6, 72, self)
-        self.font_size_edit.setValidator(int_validator)
-        self.font_size_edit.setFont(self.font)
-        self.font_size_edit.setText(str(self.font.pointSize() or self.font_size))
-
-        # Add Font Combo and Font Size Edit widgets to grid layout
-        layout.addWidget(QLabel("Font:"), 0, 0)
-        layout.addWidget(self.font_combo, 0, 1)
-        layout.addWidget(QLabel("Size:"), 1, 0)
-        layout.addWidget(self.font_size_edit, 1, 1)
-
-        # Background Color Button with preview
-        self.bg_color_button = QPushButton("Background Color", self)
-        self.bg_color_button.setFont(self.font)
-        self.bg_color_button.clicked.connect(self.select_background_color)
-        layout.addWidget(self.bg_color_button, 2, 0)
-        self.bg_preview = QLabel()
-        self.bg_preview.setFixedSize(40, 20)
-        self.bg_preview.setFrameShape(QFrame.Box)
-        layout.addWidget(self.bg_preview, 2, 1)
-
-        # Text Color Button with preview
-        self.text_color_button = QPushButton("Text Color", self)
-        self.text_color_button.setFont(self.font)
-        self.text_color_button.clicked.connect(self.select_text_color)
-        layout.addWidget(self.text_color_button, 3, 0)
-        self.text_preview = QLabel()
-        self.text_preview.setFixedSize(40, 20)
-        self.text_preview.setFrameShape(QFrame.Box)
-        layout.addWidget(self.text_preview, 3, 1)
-
-        # Encoding Combo Box
-        self.encoding_combo = QComboBox(self)
-        self.encoding_combo.addItems(["UTF-8", "ASCII", "ISO-8859-1", "Windows-1252"])
-        self.encoding_combo.setFont(self.font)
-        layout.addWidget(QLabel("Encoding:"), 4, 0)
-        layout.addWidget(self.encoding_combo, 4, 1)
-        # Set current encoding
-        idx = self.encoding_combo.findText(self.encoding)
+        idx = self.comboBox_encoding.findText(self.encoding)
         if idx >= 0:
-            self.encoding_combo.setCurrentIndex(idx)
+            self.comboBox_encoding.setCurrentIndex(idx)
 
-        # Timestamp Checkbox
-        self.timestamp_checkbox = QCheckBox("Enable Timestamp", self)
-        self.timestamp_checkbox.setChecked(self.enable_timestamp)
-        self.timestamp_checkbox.setFont(self.font)
-        layout.addWidget(self.timestamp_checkbox, 5, 0, 1, 2)
+        self.checkBox_enable_timestamp.setChecked(self.enable_timestamp)
 
-        # Save Button
-        self.save_button = QPushButton("Set", self)
-        self.save_button.setFont(self.font)
-        self.save_button.clicked.connect(self.set_settings)
-        layout.addWidget(self.save_button, 6, 0, 1, 2)
-
-        self.setLayout(layout)
-
-        # Apply previews for colors
+        # update previews
         self._update_color_previews()
 
-        # Load temporary info if any
+        # signals
+        self.bg_color_button.clicked.connect(self.select_background_color)
+        self.text_color_button.clicked.connect(self.select_text_color)
+        self.pushButton_apply.clicked.connect(self.set_settings)
+
+        # load temp saved settings if available
         try:
-            TempConf = self.LoadTempTerminalSettings(self.temp_filename)
-            if TempConf is not None:
-                # apply loaded fields safely
-                self.timestamp_checkbox.setChecked(bool(TempConf.get("timestamp_checkbox", False)))
-                font_name = TempConf.get("font_name")
-                if font_name:
-                    self.font_combo.setCurrentFont(QFont(font_name))
-                fs = TempConf.get("font_size")
-                if fs:
-                    self.font_size_edit.setText(str(fs))
-                bg_hex = TempConf.get("bg_color")
-                if bg_hex:
-                    self.bg_color = hex_to_qcolor(bg_hex)
-                txt_hex = TempConf.get("text_color")
-                if txt_hex:
-                    self.text_color = hex_to_qcolor(txt_hex)
-                enc = TempConf.get("encoding")
-                if enc:
-                    idx = self.encoding_combo.findText(enc)
-                    if idx >= 0:
-                        self.encoding_combo.setCurrentIndex(idx)
+            data = self.LoadTempTerminalSettings()
+            if data:
+                self.fontComboBox_terminal.setCurrentFont(QFont(data.get("font_name", "Courier")))
+                self.spinBox_fontSize.setValue(data.get("font_size", 13))
+                self.bg_color = hex_to_qcolor(data.get("bg_color", "#000000"))
+                self.text_color = hex_to_qcolor(data.get("text_color", "#00FF00"))
+                idx = self.comboBox_encoding.findText(data.get("encoding", "UTF-8"))
+                if idx >= 0:
+                    self.comboBox_encoding.setCurrentIndex(idx)
+                self.checkBox_enable_timestamp.setChecked(data.get("timestamp_checkbox", False))
                 self._update_color_previews()
         except Exception as e:
-            # non-fatal: continue with defaults
-            print(f"Warning: could not load terminal settings: {e}")
+            print(f"Warning: could not load temp terminal settings: {e}")
 
     def _update_color_previews(self):
-        """Update the small preview swatches for background/text color."""
+   
         self.bg_preview.setStyleSheet(f"background:{qcolor_to_hex(self.bg_color)};")
         self.text_preview.setStyleSheet(f"background:{qcolor_to_hex(self.text_color)};")
 
@@ -163,10 +97,21 @@ class TerminalSettingsDialog(QDialog):
             self.text_color = color
             self._update_color_previews()
 
+    def SaveTempTerminalSettings(self, font=None, font_size=None, bg_color=None, text_color=None, encoding=None, timestamp_checkbox=False):
+        data = {
+            "font_name": font.family(),
+            "font_size": font_size,
+            "bg_color": qcolor_to_hex(bg_color),
+            "text_color": qcolor_to_hex(text_color),
+            "encoding": encoding,
+            "timestamp_checkbox": timestamp_checkbox
+        }
+        with open(self.temp_filename, 'w', encoding='utf-8') as f:
+            json.dump(data, f, indent=2)
+
     def set_settings(self):
-        """Emit the selected settings for font, colors, encoding, and timestamp."""
-        font = self.font_combo.currentFont()
-        text = self.font_size_edit.text()
+        font = self.fontComboBox_terminal.currentFont()
+        text = str(self.spinBox_fontSize.value())
         try:
             font_size = int(text) if text else self.font.pointSize() or 13
             # Clamp to validator range
@@ -174,8 +119,8 @@ class TerminalSettingsDialog(QDialog):
         except ValueError:
             font_size = self.font.pointSize() or 13
 
-        encoding = self.encoding_combo.currentText()
-        enable_timestamp = self.timestamp_checkbox.isChecked()
+        encoding = self.comboBox_encoding.currentText()
+        enable_timestamp = self.checkBox_enable_timestamp.isChecked()
 
         # Save temporary settings
         try:
@@ -188,46 +133,23 @@ class TerminalSettingsDialog(QDialog):
             if self.parent_window and hasattr(self.parent_window, "apply_terminal_display_settings"):
                 self.apply_terminal_settings(font, font_size, self.bg_color, self.text_color, encoding, enable_timestamp)
             else:
-                print("No parent or apply_terminal_display_settings not present; settings not applied to main window.")
+                print("No parent or ttings not present; settings not applied to main window.")
         except Exception as e:
             QMessageBox.warning(self, "Apply Error", f"Could not apply settings to main window: {e}")
+
 
         # Close dialog
         self.accept()
 
-    def SaveTempTerminalSettings(self, font=None, font_size=None, bg_color=None, text_color=None, encoding=None, timestamp_checkbox=None):
-        # Gather the current settings (use provided or current dialog state)
-        data = {
-            "font_name": (font.family() if font else self.font_combo.currentFont().family()),
-            "font_size": (font_size if font_size is not None else int(self.font_size_edit.text() or 13)),
-            "bg_color": qcolor_to_hex(bg_color if bg_color else self.bg_color),
-            "text_color": qcolor_to_hex(text_color if text_color else self.text_color),
-            "encoding": encoding if encoding else self.encoding_combo.currentText(),
-            "timestamp_checkbox": bool(timestamp_checkbox if timestamp_checkbox is not None else self.timestamp_checkbox.isChecked())
-        }
-        if self.temp_filename:
-            try:
-                with open(self.temp_filename, 'w', encoding='utf-8') as temp_file:
-                    json.dump(data, temp_file, indent=2)
-                # debug print
-                print(f"Temporary JSON file saved at: {self.temp_filename}")
-            except Exception as e:
-                # bubble up so callers can warn
-                raise
 
-    def LoadTempTerminalSettings(self, temp_filename):
-        if temp_filename and os.path.exists(temp_filename):
-            try:
-                with open(temp_filename, 'r', encoding='utf-8') as temp_file:
-                    return json.load(temp_file)
-            except Exception as e:
-                print(f"Error loading temp file: {e}")
-                return None
-        # no file found -> return None
+    def LoadTempTerminalSettings(self):
+        if os.path.exists(self.temp_filename):
+            with open(self.temp_filename, 'r', encoding='utf-8') as f:
+                return json.load(f)
         return None
 
     def apply_terminal_settings(self, font, font_size, bg_color, text_color, encoding, enable_timestamp):
-        # Delegate to parent window's method if available
+       
         if self.parent_window and hasattr(self.parent_window, "apply_terminal_display_settings"):
             try:
                 self.parent_window.apply_terminal_display_settings(font, font_size, bg_color, text_color, encoding, enable_timestamp)

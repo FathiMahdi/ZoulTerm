@@ -37,7 +37,7 @@
    <enum>Qt::ClickFocus</enum>
   </property>
   <property name="windowTitle">
-   <string>ZoulTerm V0.0.2</string>
+   <string>ZoulTerm V1.0.0</string>
   </property>
   <property name="windowIcon">
    <iconset resource="../../ZoulTerm.qrc">
@@ -478,8 +478,8 @@
              </property>
              <property name="iconSize">
               <size>
-               <width>24</width>
-               <height>24</height>
+               <width>20</width>
+               <height>20</height>
               </size>
              </property>
              <item>
@@ -548,7 +548,7 @@
              <bool>true</bool>
             </property>
             <property name="toolTip">
-             <string>command</string>
+             <string/>
             </property>
             <property name="autoFillBackground">
              <bool>true</bool>
@@ -574,7 +574,7 @@
              <set>Qt::ImhNone</set>
             </property>
             <property name="frameShape">
-             <enum>QFrame::WinPanel</enum>
+             <enum>QFrame::Box</enum>
             </property>
             <property name="frameShadow">
              <enum>QFrame::Sunken</enum>
@@ -583,7 +583,7 @@
              <enum>Qt::ScrollBarAsNeeded</enum>
             </property>
             <property name="horizontalScrollBarPolicy">
-             <enum>Qt::ScrollBarAlwaysOff</enum>
+             <enum>Qt::ScrollBarAsNeeded</enum>
             </property>
             <property name="sizeAdjustPolicy">
              <enum>QAbstractScrollArea::AdjustToContents</enum>
@@ -600,14 +600,17 @@
             <property name="overwriteMode">
              <bool>false</bool>
             </property>
+            <property name="cursorWidth">
+             <number>2</number>
+            </property>
             <property name="textInteractionFlags">
-             <set>Qt::LinksAccessibleByKeyboard|Qt::LinksAccessibleByMouse|Qt::TextBrowserInteraction|Qt::TextSelectableByKeyboard|Qt::TextSelectableByMouse</set>
+             <set>Qt::LinksAccessibleByMouse</set>
             </property>
             <property name="backgroundVisible">
              <bool>true</bool>
             </property>
             <property name="centerOnScroll">
-             <bool>true</bool>
+             <bool>false</bool>
             </property>
            </widget>
           </item>
