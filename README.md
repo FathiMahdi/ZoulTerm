@@ -1,6 +1,6 @@
 # 🔌 ZoulTerm
 
-### Version: 0.0.2  
+### Version: 1.0.0  
 **ZoulTerm** is an open-source, Qt-based serial monitor built for developers working with microcontrollers, embedded systems, and development boards. Inspired by tools like **Tera Term** and **RealTerm**, ZoulTerm provides a lightweight, modern, and Linux-friendly alternative.
 
 ---
@@ -41,10 +41,10 @@ go to release page and download the latest .deb version
 dbkg -i zoulterm_[version]
 ```
 
-for example for beta version
+for example
 ```bash
 
-dbkg -i zoulterm_0.0.2
+dbkg -i zoulterm_1.0.0
 ```
 
 > 📋 Note: This will automatically create a python virtual environment folder

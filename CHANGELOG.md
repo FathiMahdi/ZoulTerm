@@ -10,6 +10,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [0.0.1-beta] - 2025-08-05
 
 ### 🚀 Added
+
 - Initial beta release of ZoulTerm 🧪
 - Serial port connection with real-time data display
 - Hex and ASCII terminal view modes
@@ -21,6 +22,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 - Clean and themed terminal interface
 
 ### 🐛 Known Issues
+
 - No auto-reconnect on serial disconnection
 - Limited customization of fonts/colors in settings
 
@@ -29,6 +31,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 ## [Unreleased]
 
 ### 🔜 Planned Features
+
 - Serial port settings: baud rate, parity, stop bits
 - Plotting support for real-time data (e.g. accelerometer values)
 - Theme selector (light/dark/custom)
@@ -37,19 +40,31 @@ and this project adheres to [Semantic Versioning](https://semver.org/).
 
 ---
 
-
-
 ## [0.0.2-beta] - 2025-08-16
 
-### 🚀 Added
+### 🚀Added
+
 - Abble to parse asscii color code.
 - Enhanced terminal setting UI.
 - Baudrate and COM port editable.
 - Able to save/retrive command list
 
+### 🐛Known Issues
 
-### 🐛 Known Issues
 - No new line added in hex mode
 
 ---
 
+## [V1.0.0] - 2025-09-6
+
+### 🚀 Added
+
+- Serial viewer.
+- Enhance terminal settings.
+- link (stop-bit, control, parity check, and number of bits).
+
+### 🐛 Known Issues
+
+- No new line added in hex mode
+
+---
