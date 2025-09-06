@@ -733,7 +733,6 @@
    <addaction name="actionSetupConnection"/>
    <addaction name="actionConnect"/>
    <addaction name="actionDisconnect"/>
-   <addaction name="actionpause"/>
    <addaction name="separator"/>
    <addaction name="actionSendCommand"/>
    <addaction name="separator"/>
@@ -961,15 +960,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Z</string>
-   </property>
-  </action>
-  <action name="actionpause">
-   <property name="icon">
-    <iconset resource="../../ZoulTerm.qrc">
-     <normaloff>:/resources/assets/icons/pause.png</normaloff>:/resources/assets/icons/pause.png</iconset>
-   </property>
-   <property name="text">
-    <string>pause</string>
    </property>
   </action>
   <action name="actionSetup_Serial_Connection">
